@@ -1,0 +1,23 @@
+### BOOK APPOINTMENT ###
+POST http://localhost:3501/v1.0/invoke/appointment-api/method/appointments/
+Content-Type: application/json
+
+{
+    "animal": {
+        "name": "Mozart",
+        "type": "dog",
+        "breed": "Pekingese",
+        "age": 7
+    },
+    "owner": {
+        "name": "Hugo",
+        "email": "hugo@gmail.com",
+        "phone": "999-9999-9999"
+    },
+    "appointment_date": "2025-11-12T19:47:27.678Z",
+    "reason": "annual vaccine",
+    "notes": ""
+}
+
+###  GET APPOINTMENTS ###
+GET http://localhost:3501/v1.0/invoke/appointment-api/method/appointments/
