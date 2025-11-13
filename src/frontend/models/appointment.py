@@ -5,9 +5,13 @@ from enum import Enum
 from .animal import Animal
 from .owner import Owner
 
-class AppointmentSummary(BaseModel):
-    id: str
-    appointment_date: datetime = Field(...,alias="appointmentDate")
+
+class AppointmentStatus(str, Enum):
+    SCHEDULED = "scheduled"
+    CONFIRMED = "confirmed"
+    COMPLETED = "completed"
+    CANCELLED = "cancelled"
+
 
 class AppointmentCreate(BaseModel):
     animal: Animal
@@ -23,5 +27,6 @@ class Appointment(BaseModel):
     owner: Owner
     appointment_date: datetime
     reason: str
-    notes: Optional[str] = None    
+    notes: Optional[str] = None
+    status: AppointmentStatus = AppointmentStatus.SCHEDULED
     created_at: datetime
