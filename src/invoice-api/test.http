@@ -1,0 +1,14 @@
+GET http://localhost:8002/dapr/subscribe
+
+###
+POST http://localhost:3502/v1.0/publish/pubsub/invoice
+Content-Type: application/json
+
+{
+    "amount": 250.00,
+    "appointmentId": "4544545",
+    "ownerName": "67890",
+    "ownerEmail": "hugo@contoso.com",
+    "petName": "Mozart",
+    "appointmentReason": "Annual Vaccine"
+}
