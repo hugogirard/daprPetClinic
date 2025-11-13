@@ -1,112 +1,127 @@
 # Pet Clinic Frontend
 
-A beautiful Streamlit web application for managing pet clinic appointments.
+A modern web interface for the Pet Clinic Appointment API built with Express, EJS templates, and Dapr.
 
 ## Features
 
-- 🏠 **Home Dashboard**: View statistics and recent appointments
-- 📅 **Book Appointments**: Easy-to-use form for scheduling pet appointments
-- 📋 **View Appointments**: List and manage all appointments with filtering
-- 🔍 **Search**: Find appointments by ID
-- ✅ **Status Management**: Update appointment status (confirm, complete, cancel)
+- 🔐 **Fake Login System**: Any email/password combination works for demo purposes
+- 📅 **Appointment Management**: Create, view, and cancel pet appointments
+- 👤 **User Dashboard**: View personal appointments and book new ones
+- 🛡️ **Admin Panel**: Special access for `admin@petclinic.com` to charge appointments
+- 🐾 **Pet Information**: Support for multiple animal types (dog, cat, bird, rabbit, hamster, other)
+- 🔌 **Dapr Integration**: All API calls use Dapr client for service invocation
 
-## Prerequisites
+## Project Structure
 
-- Python 3.8+
-- The appointment-api service running on `http://localhost:8001`
+```
+frontend/
+├── models/                    # Data models matching OpenAPI spec
+│   ├── Animal.js
+│   ├── AnimalType.js
+│   ├── Owner.js
+│   ├── Appointment.js
+│   ├── AppointmentCreate.js
+│   └── AppointmentSummary.js
+├── services/                  # API service layer
+│   └── PetClinicService.js   # Dapr client integration
+├── views/                     # EJS templates
+│   ├── login.ejs             # Login page
+│   ├── dashboard.ejs         # User dashboard
+│   ├── admin.ejs             # Admin panel
+│   └── appointment-detail.ejs # Appointment details
+├── server.js                  # Express server
+└── package.json
+```
 
 ## Installation
 
 1. Install dependencies:
 ```bash
-pip install -r requirements.txt
+npm install
 ```
+
+2. Ensure the backend API is running and accessible via Dapr
 
 ## Running the Application
 
-Start the Streamlit app:
+### With Dapr
+
+Run the frontend with Dapr sidecar:
+
 ```bash
-streamlit run app.py
+dapr run --app-id frontend --app-port 3000 --dapr-http-port 3500 -- node server.js
 ```
 
-The app will open in your browser at `http://localhost:8501`
+### Without Dapr (for development)
 
-## Architecture
-
-```
-frontend/
-├── app.py                      # Main Streamlit application
-├── requirements.txt            # Python dependencies
-├── models/                     # Pydantic models
-│   ├── __init__.py
-│   ├── animal.py              # Animal model
-│   ├── owner.py               # Owner model
-│   └── appointment.py         # Appointment models
-└── services/                   # API service layer
-    ├── __init__.py
-    └── appointment_service.py # Appointment API client
+```bash
+npm start
 ```
 
-## API Configuration
-
-By default, the app connects to the appointment API at `http://localhost:8001`. To change this, modify the `base_url` parameter when initializing the `AppointmentService` in `app.py`:
-
-```python
-appointment_service = AppointmentService(base_url="http://your-api-url:port")
-```
+The application will be available at `http://localhost:3000`
 
 ## Usage
 
-### Booking an Appointment
+### Regular User Flow
 
-1. Navigate to "📅 Book Appointment"
-2. Fill in pet information (name, type, breed, age)
-3. Fill in owner information (name, email, phone)
-4. Select appointment date and time
-5. Provide reason for visit and any additional notes
-6. Click "Book Appointment"
+1. Navigate to `http://localhost:3000`
+2. Enter any email and password (e.g., `user@example.com`)
+3. You'll be redirected to the dashboard where you can:
+   - View your appointments
+   - Book new appointments
+   - Cancel existing appointments
 
-### Managing Appointments
+### Admin Flow
 
-1. Navigate to "📋 View Appointments"
-2. Filter by status if needed
-3. Expand an appointment to view details
-4. Use action buttons to:
-   - ✅ Confirm the appointment
-   - ✔️ Mark as completed
-   - 📅 Reschedule (set back to scheduled)
-   - ❌ Cancel the appointment
+1. Navigate to `http://localhost:3000`
+2. Login with email: `admin@petclinic.com` (any password)
+3. You'll be redirected to the admin panel where you can:
+   - Charge appointments by entering the appointment ID
 
-### Searching for an Appointment
+## API Integration
 
-1. Navigate to "🔍 Search Appointment"
-2. Enter the appointment ID
-3. Click "Search" to view details
+The frontend uses Dapr Client to communicate with the backend API (app-id: `backend`):
+
+### Endpoints Used
+
+- **POST** `/appointment` - Create new appointment
+- **GET** `/appointments/email/{owner_email}` - List appointments by email
+- **GET** `/appointments/byId/{appointment_id}` - Get specific appointment
+- **POST** `/appointment/charge/{appointment_id}` - Charge appointment (admin only)
+- **DELETE** `/appointments/{appointment_id}` - Cancel appointment
+
+## Configuration
+
+You can configure the following in `server.js`:
+
+- **PORT**: Application port (default: 3000)
+- **Dapr App ID**: Backend service ID (default: 'backend')
+- **Dapr Port**: Dapr sidecar port (default: 3500)
 
 ## Models
 
-All API requests and responses use Pydantic models for type safety and validation:
+All models are based on the OpenAPI specification:
 
-- `Animal`: Pet information
-- `Owner`: Owner contact details
-- `AppointmentCreate`: Data for creating new appointments
-- `Appointment`: Complete appointment information with ID and status
-- `AppointmentStatus`: Enum for appointment states (scheduled, confirmed, completed, cancelled)
+- **Animal**: Pet information (name, type, breed, age)
+- **Owner**: Owner details (name, email, phone)
+- **Appointment**: Full appointment details
+- **AppointmentCreate**: Data for creating new appointments
+- **AppointmentSummary**: Simplified appointment view
 
-## Service Layer
+## Security Note
 
-The `AppointmentService` class handles all API communication:
+⚠️ **This is a demo application** with a fake login system. In production:
+- Implement proper authentication
+- Add authorization checks
+- Validate all inputs
+- Use HTTPS
+- Secure session configuration
+- Add CSRF protection
 
-- `create_appointment()`: Create new appointment
-- `list_appointments()`: Get all appointments (with optional status filter)
-- `get_appointment()`: Get specific appointment by ID
-- `update_appointment_status()`: Update appointment status
-- `cancel_appointment()`: Cancel and delete appointment
+## Technologies Used
 
-## Styling
-
-The app includes custom CSS for a modern, pet-friendly design with:
-- Color-coded status badges
-- Responsive layout
-- Animal emojis for visual appeal
-- Clean card-based design
+- **Express 5**: Web framework
+- **EJS**: Templating engine
+- **Dapr Client**: Service invocation
+- **Express Session**: Session management
+- **Native CSS**: Styling (no external CSS frameworks)

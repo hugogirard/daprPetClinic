@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pet Clinic - Admin Panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar h1 {
+            font-size: 24px;
+        }
+
+        .navbar .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .badge-admin {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .section {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            color: #dc3545;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #dc3545;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert {
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .alert-error {
+            background: #fee;
+            color: #c33;
+            border-left: 4px solid #dc3545;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            font-family: 'Courier New', monospace;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #dc3545;
+        }
+
+        .btn-charge {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn-charge:hover {
+            transform: translateY(-2px);
+        }
+
+        .info-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 25px;
+        }
+
+        .info-box h3 {
+            color: #856404;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .info-box p {
+            color: #856404;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .feature-list {
+            list-style: none;
+            margin-top: 10px;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .feature-list li:before {
+            content: "⚡";
+            position: absolute;
+            left: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <h1>🛡️ Admin Panel</h1>
+        <div class="user-info">
+            <span class="badge-admin">ADMINISTRATOR</span>
+            <span>
+                <%= userEmail %>
+            </span>
+            <a href="/logout" class="btn-logout">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Alerts -->
+        <% if (error) { %>
+            <div class="alert alert-error">
+                <strong>Error:</strong>
+                <%= error %>
+            </div>
+            <% } %>
+                <% if (success) { %>
+                    <div class="alert alert-success">
+                        <strong>Success!</strong>
+                        <%= success %>
+                    </div>
+                    <% } %>
+
+                        <!-- Info Box -->
+                        <div class="info-box">
+                            <h3>⚠️ Administrative Access Only</h3>
+                            <p>
+                                You are logged in as an administrator. This panel allows you to charge appointments
+                                by entering the appointment ID below. This action will update the appointment status
+                                and trigger the billing process.
+                            </p>
+                        </div>
+
+                        <!-- Charge Appointment Form -->
+                        <div class="section">
+                            <h2>
+                                💳 Charge Appointment
+                            </h2>
+
+                            <form action="/appointment/charge" method="POST">
+                                <div class="form-group">
+                                    <label for="appointmentId">Appointment ID</label>
+                                    <input type="text" id="appointmentId" name="appointmentId" required
+                                        placeholder="Enter appointment ID (e.g., 123e4567-e89b-12d3-a456-426614174000)"
+                                        pattern="[a-zA-Z0-9\-]+">
+                                    <small style="color: #666; display: block; margin-top: 5px;">
+                                        Enter the unique appointment identifier to process the charge
+                                    </small>
+                                </div>
+
+                                <button type="submit" class="btn-charge">
+                                    Process Charge
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Admin Features Info -->
+                        <div class="section">
+                            <h2>📋 Admin Features</h2>
+                            <ul class="feature-list">
+                                <li><strong>Charge Appointments:</strong> Process billing for completed appointments
+                                </li>
+                                <li><strong>Appointment Management:</strong> Access to all appointment records</li>
+                                <li><strong>System Administration:</strong> Full control over clinic operations</li>
+                            </ul>
+                        </div>
+    </div>
+</body>
+
+</html>
