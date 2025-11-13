@@ -142,32 +142,49 @@ app.get('/admin', requireAdmin, (req, res) => {
   });
 });
 
+// Search appointments by email (admin only)
+app.get('/admin/search', requireAdmin, async (req, res) => {
+  try {
+    const email = req.query.email;
+    if (!email) {
+      return res.json({ success: false, error: 'Email is required' });
+    }
+    
+    const appointments = await petClinicService.listAppointments(email);
+    
+    // Get full appointment details for each
+    const detailedAppointments = await Promise.all(
+      appointments.map(async (summary) => {
+        try {
+          return await petClinicService.getAppointment(summary.id);
+        } catch (err) {
+          return null;
+        }
+      })
+    );
+    
+    res.json({ 
+      success: true, 
+      appointments: detailedAppointments.filter(a => a !== null) 
+    });
+  } catch (error) {
+    res.json({ success: false, error: error.message });
+  }
+});
+
 // Charge appointment (admin only)
 app.post('/appointment/charge', requireAdmin, async (req, res) => {
   try {
     const { appointmentId } = req.body;
     
     if (!appointmentId) {
-      return res.render('admin', {
-        userEmail: req.session.userEmail,
-        error: 'Please provide an appointment ID',
-        success: null
-      });
+      return res.redirect('/admin?toast=error&message=Please+provide+an+appointment+ID');
     }
     
     await petClinicService.chargeAppointment(appointmentId);
-    
-    res.render('admin', {
-      userEmail: req.session.userEmail,
-      error: null,
-      success: `Appointment ${appointmentId} charged successfully!`
-    });
+    res.redirect('/admin?toast=success&message=Appointment+charged+successfully');
   } catch (error) {
-    res.render('admin', {
-      userEmail: req.session.userEmail,
-      error: error.message,
-      success: null
-    });
+    res.redirect('/admin?toast=error&message=' + encodeURIComponent(error.message));
   }
 });
 
