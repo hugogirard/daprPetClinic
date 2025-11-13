@@ -1,15 +1,11 @@
 const express = require('express');
 const path = require('path');
 const session = require('express-session');
-const PetClinicService = require('./services/PetClinicService');
-const AppointmentCreate = require('./models/AppointmentCreate');
-const AnimalType = require('./models/AnimalType');
+const adminRoutes = require('./routes/admin');
+const customerRoutes = require('./routes/customer');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-// Initialize Pet Clinic Service with Dapr
-const petClinicService = new PetClinicService();
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
@@ -27,24 +23,6 @@ app.use(session({
 // Set view engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-
-// Authentication middleware
-const requireAuth = (req, res, next) => {
-  if (!req.session.userEmail) {
-    return res.redirect('/');
-  }
-  next();
-};
-
-// Admin middleware
-const requireAdmin = (req, res, next) => {
-  if (!req.session.userEmail || req.session.userEmail !== 'admin@petclinic.com') {
-    return res.redirect('/dashboard');
-  }
-  next();
-};
-
-// Routes
 
 // Login page
 app.get('/', (req, res) => {
@@ -82,124 +60,9 @@ app.get('/logout', (req, res) => {
   res.redirect('/');
 });
 
-// Dashboard (regular users)
-app.get('/dashboard', requireAuth, async (req, res) => {
-  try {
-    const appointments = await petClinicService.listAppointments(req.session.userEmail);
-    res.render('dashboard', {
-      userEmail: req.session.userEmail,
-      appointments: appointments,
-      toast: req.query.toast || null
-    });
-  } catch (error) {
-    res.render('dashboard', {
-      userEmail: req.session.userEmail,
-      appointments: [],
-      toast: null
-    });
-  }
-});
-
-// New appointment page
-app.get('/appointment/new', requireAuth, (req, res) => {
-  res.render('new-appointment', {
-    userEmail: req.session.userEmail,
-    animalTypes: AnimalType.getAll()
-  });
-});
-
-// Create appointment
-app.post('/appointment/create', requireAuth, async (req, res) => {
-  try {
-    const appointmentData = AppointmentCreate.fromFormData({
-      ...req.body,
-      ownerEmail: req.session.userEmail
-    });
-    
-    await petClinicService.createAppointment(appointmentData);
-    res.redirect('/dashboard?toast=success');
-  } catch (error) {
-    res.redirect('/appointment/new?toast=error');
-  }
-});
-
-// Cancel appointment
-app.post('/appointment/cancel/:id', requireAuth, async (req, res) => {
-  try {
-    await petClinicService.cancelAppointment(req.params.id);
-    res.redirect('/dashboard?toast=cancelled');
-  } catch (error) {
-    res.redirect('/dashboard?toast=error');
-  }
-});
-
-// Admin page
-app.get('/admin', requireAdmin, (req, res) => {
-  res.render('admin', {
-    userEmail: req.session.userEmail,
-    error: null,
-    success: null
-  });
-});
-
-// Search appointments by email (admin only)
-app.get('/admin/search', requireAdmin, async (req, res) => {
-  try {
-    const email = req.query.email;
-    if (!email) {
-      return res.json({ success: false, error: 'Email is required' });
-    }
-    
-    const appointments = await petClinicService.listAppointments(email);
-    
-    // Get full appointment details for each
-    const detailedAppointments = await Promise.all(
-      appointments.map(async (summary) => {
-        try {
-          return await petClinicService.getAppointment(summary.id);
-        } catch (err) {
-          return null;
-        }
-      })
-    );
-    
-    res.json({ 
-      success: true, 
-      appointments: detailedAppointments.filter(a => a !== null) 
-    });
-  } catch (error) {
-    res.json({ success: false, error: error.message });
-  }
-});
-
-// Charge appointment (admin only)
-app.post('/appointment/charge', requireAdmin, async (req, res) => {
-  try {
-    const { appointmentId } = req.body;
-    
-    if (!appointmentId) {
-      return res.redirect('/admin?toast=error&message=Please+provide+an+appointment+ID');
-    }
-    
-    await petClinicService.chargeAppointment(appointmentId);
-    res.redirect('/admin?toast=success&message=Appointment+charged+successfully');
-  } catch (error) {
-    res.redirect('/admin?toast=error&message=' + encodeURIComponent(error.message));
-  }
-});
-
-// View appointment details
-app.get('/appointment/:id', requireAuth, async (req, res) => {
-  try {
-    const appointment = await petClinicService.getAppointment(req.params.id);
-    res.render('appointment-detail', {
-      userEmail: req.session.userEmail,
-      appointment: appointment
-    });
-  } catch (error) {
-    res.redirect('/dashboard');
-  }
-});
+// Mount routes
+app.use('/admin', adminRoutes);
+app.use('/', customerRoutes);
 
 // Start server
 app.listen(PORT, () => {
