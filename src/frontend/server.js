@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const session = require('express-session');
+const loginRoutes = require('./routes/login');
 const adminRoutes = require('./routes/admin');
 const customerRoutes = require('./routes/customer');
 
@@ -24,43 +25,8 @@ app.use(session({
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Login page
-app.get('/', (req, res) => {
-  if (req.session.userEmail) {
-    if (req.session.userEmail === 'admin@petclinic.com') {
-      return res.redirect('/admin');
-    }
-    return res.redirect('/dashboard');
-  }
-  res.render('login', { error: null });
-});
-
-// Login handler
-app.post('/login', (req, res) => {
-  const { email, password } = req.body;
-  
-  // Fake login - always succeeds if email and password are provided
-  if (!email || !password) {
-    return res.render('login', { error: 'Please provide email and password' });
-  }
-
-  req.session.userEmail = email;
-  
-  // Redirect based on user type
-  if (email === 'admin@petclinic.com') {
-    return res.redirect('/admin');
-  }
-  
-  res.redirect('/dashboard');
-});
-
-// Logout
-app.get('/logout', (req, res) => {
-  req.session.destroy();
-  res.redirect('/');
-});
-
 // Mount routes
+app.use('/', loginRoutes);
 app.use('/admin', adminRoutes);
 app.use('/', customerRoutes);
 
