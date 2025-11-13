@@ -25,23 +25,23 @@ class AppointmentService:
             created_at=datetime.now()
         )
                 
-        self.dapr_client.save_state(DAPR_STORE_NAME, appointment_id, json.dumps(appointment.model_dump(mode='json')))
+        self.dapr_client.save_state(DAPR_STORE_NAME, appointment_id, json.dumps(appointment.model_dump(mode='json', by_alias=True)))
 
         existing_appointments = self.get_appointments(appointment.owner.email)
-        # Save all appointments for a client
+        
         appointment_summary = AppointmentSummary(
             id=appointment.id,
             appointmentDate=appointment_data.appointment_date
         )
         
-        
-        # {
-        #     "appointmentId": appointment.id,
-        #     "appointmentDate": appointment.appointment_date.isoformat()
-        # }        
         existing_appointments.append(appointment_summary)
 
-        self.dapr_client.save_state(DAPR_STORE_NAME,appointment.owner.email,json.dumps(existing_appointments))
+        # Serialize AppointmentSummary objects to dicts before saving
+        self.dapr_client.save_state(
+            DAPR_STORE_NAME,
+            appointment.owner.email,
+            json.dumps([appt.model_dump(mode='json', by_alias=True) for appt in existing_appointments])
+        )
         
         return appointment
     
@@ -52,20 +52,21 @@ class AppointmentService:
         if not result.data:
             return []
 
-        # Parse the result - could be a single appointment or a list
         data = json.loads(result.data)
-        
-        # If it's a list, parse each appointment
-        return data
+
+        # Parse each appointment dict into AppointmentSummary objects
+        return [AppointmentSummary.model_validate(appt) for appt in data]
                 
-    def get_appointment(self, owner_email: str) -> Optional[Appointment]:
+    def get_appointment(self, appointment_id: str) -> Optional[Appointment]:
         """Get a specific appointment by ID"""
-        result = self.dapr_client.get_state(store_name=DAPR_STORE_NAME,key=owner_email)
+        result = self.dapr_client.get_state(store_name=DAPR_STORE_NAME, key=appointment_id)
 
         if not result.data:
             return None
 
-        return Appointment.model_validate(result.data)        
+        # Parse JSON before model validation
+        data = json.loads(result.data)
+        return Appointment.model_validate(data)        
     
     def charge_appointment(self, appointment_id: str) -> None:
         """Update the status of an appointment"""
@@ -75,7 +76,7 @@ class AppointmentService:
         if not appointment:
             return None
                 
-        self.dapr_client.save_state(DAPR_STORE_NAME, appointment_id, json.dumps(appointment.model_dump(mode='json')))                
+        self.dapr_client.save_state(DAPR_STORE_NAME, appointment_id, json.dumps(appointment.model_dump(mode='json', by_alias=True)))                
     
     def cancel_appointment(self, appointment_id: str) -> bool:
         """Cancel and delete an appointment"""

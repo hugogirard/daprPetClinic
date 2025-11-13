@@ -1,5 +1,5 @@
 ### BOOK APPOINTMENT ###
-POST http://localhost:3501/v1.0/invoke/appointment-api/method/appointments/
+POST http://localhost:3501/v1.0/invoke/appointment-api/method/appointment/
 Content-Type: application/json
 
 {
@@ -14,10 +14,13 @@ Content-Type: application/json
         "email": "hugo@gmail.com",
         "phone": "999-9999-9999"
     },
-    "appointment_date": "2025-11-12T19:47:27.678Z",
+    "appointmentDate": "2025-11-12T19:47:27.678Z",
     "reason": "annual vaccine",
     "notes": ""
 }
 
 ###  GET APPOINTMENTS ###
-GET http://localhost:3501/v1.0/invoke/appointment-api/method/appointments/
+GET http://localhost:8001/appointments/email/hugo%40gmail.com
+
+###
+GET http://localhost:3501/v1.0/invoke/appointment-api/method/appointments/byId/74b20735-448c-4fb3-9904-ff0f76caa4fd
