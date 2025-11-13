@@ -21,14 +21,12 @@ router.get('/dashboard', requireAuth, async (req, res) => {
     const appointments = await petClinicService.listAppointments(req.session.userEmail);
     res.render('dashboard', {
       userEmail: req.session.userEmail,
-      appointments: appointments,
-      toast: req.query.toast || null
+      appointments: appointments
     });
   } catch (error) {
     res.render('dashboard', {
       userEmail: req.session.userEmail,
-      appointments: [],
-      toast: null
+      appointments: []
     });
   }
 });
@@ -50,9 +48,11 @@ router.post('/appointment/create', requireAuth, async (req, res) => {
     });
     
     await petClinicService.createAppointment(appointmentData);
-    res.redirect('/dashboard?toast=success');
+    req.session.flash = { type: 'success', message: 'Appointment created successfully!' };
+    res.redirect('/dashboard');
   } catch (error) {
-    res.redirect('/appointment/new?toast=error');
+    req.session.flash = { type: 'error', message: `Failed to create appointment: ${error.message}` };
+    res.redirect('/appointment/new');
   }
 });
 
@@ -60,9 +60,11 @@ router.post('/appointment/create', requireAuth, async (req, res) => {
 router.post('/appointment/cancel/:id', requireAuth, async (req, res) => {
   try {
     await petClinicService.cancelAppointment(req.params.id);
-    res.redirect('/dashboard?toast=cancelled');
+    req.session.flash = { type: 'cancelled', message: 'Appointment cancelled successfully' };
+    res.redirect('/dashboard');
   } catch (error) {
-    res.redirect('/dashboard?toast=error');
+    req.session.flash = { type: 'error', message: `Failed to cancel appointment: ${error.message}` };
+    res.redirect('/dashboard');
   }
 });
 

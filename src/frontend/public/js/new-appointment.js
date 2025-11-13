@@ -2,12 +2,11 @@
 
 // Show toast for errors
 function initToasts() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const toast = urlParams.get('toast');
-
-    if (toast === 'error') {
+    const flashData = window.flashMessage;
+    
+    if (flashData && flashData.type === 'error') {
         Toastify({
-            text: "❌ Failed to create appointment. Please try again.",
+            text: `❌ ${flashData.message}`,
             duration: 3000,
             gravity: "top",
             position: "right",
@@ -15,7 +14,6 @@ function initToasts() {
                 background: "linear-gradient(to right, #eb3349, #f45c43)",
             }
         }).showToast();
-        window.history.replaceState({}, document.title, window.location.pathname);
     }
 }
 

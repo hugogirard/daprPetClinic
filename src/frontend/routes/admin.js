@@ -38,33 +38,41 @@ router.get('/search', requireAdmin, async (req, res) => {
         try {
           return await petClinicService.getAppointment(summary.id);
         } catch (err) {
+          console.warn(`Could not fetch appointment ${summary.id}:`, err.message);
           return null;
         }
       })
     );
     
+    // Filter out nulls from failed fetches
+    const validAppointments = detailedAppointments.filter(a => a !== null);
+    
     res.json({ 
       success: true, 
-      appointments: detailedAppointments.filter(a => a !== null) 
+      appointments: validAppointments
     });
   } catch (error) {
+    console.error('Search error:', error);
     res.json({ success: false, error: error.message });
   }
 });
 
 // Charge appointment (admin only)
-router.post('/appointment/charge', requireAdmin, async (req, res) => {
+router.post('/charge', requireAdmin, async (req, res) => {
   try {
     const { appointmentId } = req.body;
     
     if (!appointmentId) {
-      return res.redirect('/admin?toast=error&message=Please+provide+an+appointment+ID');
+      req.session.flash = { type: 'error', message: 'Please provide an appointment ID' };
+      return res.redirect('/admin');
     }
     
     await petClinicService.chargeAppointment(appointmentId);
-    res.redirect('/admin?toast=success&message=Appointment+charged+successfully');
+    req.session.flash = { type: 'success', message: 'Appointment charged successfully' };
+    res.redirect('/admin');
   } catch (error) {
-    res.redirect('/admin?toast=error&message=' + encodeURIComponent(error.message));
+    req.session.flash = { type: 'error', message: `Failed to charge appointment: ${error.message}` };
+    res.redirect('/admin');
   }
 });
 

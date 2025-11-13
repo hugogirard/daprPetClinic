@@ -1,33 +1,34 @@
 // Admin panel JavaScript
 
-// Show toast based on query parameter
+// Show toast based on flash message from server
 function initToasts() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const toast = urlParams.get('toast');
-    const message = urlParams.get('message');
-
-    if (toast === 'success') {
+    const flashData = window.flashMessage;
+    
+    if (flashData && flashData.type && flashData.message) {
+        let background;
+        let icon;
+        
+        switch(flashData.type) {
+            case 'success':
+                background = "linear-gradient(to right, #00b09b, #96c93d)";
+                icon = "✅";
+                break;
+            case 'error':
+                background = "linear-gradient(to right, #eb3349, #f45c43)";
+                icon = "❌";
+                break;
+            default:
+                background = "linear-gradient(to right, #ff5f6d, #ffc371)";
+                icon = "ℹ️";
+        }
+        
         Toastify({
-            text: "✅ " + (message || "Operation successful!"),
+            text: `${icon} ${flashData.message}`,
             duration: 3000,
             gravity: "top",
             position: "right",
-            style: {
-                background: "linear-gradient(to right, #00b09b, #96c93d)",
-            }
+            style: { background }
         }).showToast();
-        window.history.replaceState({}, document.title, window.location.pathname);
-    } else if (toast === 'error') {
-        Toastify({
-            text: "❌ " + (message || "An error occurred"),
-            duration: 3000,
-            gravity: "top",
-            position: "right",
-            style: {
-                background: "linear-gradient(to right, #eb3349, #f45c43)",
-            }
-        }).showToast();
-        window.history.replaceState({}, document.title, window.location.pathname);
     }
 }
 
