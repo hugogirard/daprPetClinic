@@ -4,202 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pet Clinic - Dashboard</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f7fa;
-        }
-
-        .navbar {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .navbar h1 {
-            font-size: 24px;
-        }
-
-        .navbar .user-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .btn-logout {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 8px 16px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            transition: background 0.3s;
-        }
-
-        .btn-logout:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }
-
-        .section {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-        }
-
-        .section h2 {
-            color: #333;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #667eea;
-        }
-
-        .alert {
-            padding: 12px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-
-        .alert-error {
-            background: #fee;
-            color: #c33;
-        }
-
-        .alert-success {
-            background: #efe;
-            color: #3c3;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        label {
-            margin-bottom: 5px;
-            color: #555;
-            font-weight: 500;
-            font-size: 14px;
-        }
-
-        input,
-        select,
-        textarea {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 14px;
-            font-family: inherit;
-        }
-
-        input:focus,
-        select:focus,
-        textarea:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-
-        .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 5px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-        }
-
-        .btn-danger {
-            background: #dc3545;
-            color: white;
-        }
-
-        .appointments-list {
-            display: grid;
-            gap: 15px;
-        }
-
-        .appointment-card {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: box-shadow 0.3s;
-        }
-
-        .appointment-card:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .appointment-info {
-            flex: 1;
-        }
-
-        .appointment-id {
-            font-size: 12px;
-            color: #999;
-            margin-bottom: 5px;
-        }
-
-        .appointment-date {
-            font-size: 16px;
-            font-weight: 600;
-            color: #333;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 40px;
-            color: #999;
-        }
-
-        .empty-state p {
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
-    </style>
+    <title>Pet Clinic - My Appointments</title>
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 </head>
 
 <body>
@@ -214,120 +21,96 @@
     </nav>
 
     <div class="container">
-        <!-- Alerts -->
-        <% if (error) { %>
-            <div class="alert alert-error">
-                <%= error %>
+        <!-- Header with action button -->
+        <div class="header-section">
+            <div>
+                <h1 class="page-title">My Appointments</h1>
+                <p class="page-subtitle">View and manage your pet appointments</p>
             </div>
-            <% } %>
-                <% if (success) { %>
-                    <div class="alert alert-success">
-                        <%= success %>
+            <a href="/appointment/new" class="btn btn-primary btn-large">
+                <span class="btn-icon">📅</span> Book New Appointment
+            </a>
+        </div>
+
+        <!-- Appointments List -->
+        <div class="section">
+            <% if (appointments.length===0) { %>
+                <div class="empty-state">
+                    <div class="empty-icon">📅</div>
+                    <p>No appointments scheduled yet</p>
+                    <small>Click the button above to book your first appointment</small>
+                </div>
+                <% } else { %>
+                    <div class="appointments-list">
+                        <% appointments.forEach(appointment=> { %>
+                            <div class="appointment-card">
+                                <div class="appointment-info">
+                                    <div class="appointment-id">ID: <%= appointment.id %>
+                                    </div>
+                                    <div class="appointment-date">
+                                        <%= new Date(appointment.appointmentDate).toLocaleString('en-US', {
+                                            weekday: 'long' , year: 'numeric' , month: 'long' , day: 'numeric' ,
+                                            hour: '2-digit' , minute: '2-digit' }) %>
+                                    </div>
+                                </div>
+                                <div class="appointment-actions">
+                                    <a href="/appointment/<%= appointment.id %>" class="btn btn-secondary">View
+                                        Details</a>
+                                    <form action="/appointment/cancel/<%= appointment.id %>" method="POST"
+                                        style="display: inline;"
+                                        onsubmit="return confirm('Are you sure you want to cancel this appointment?');">
+                                        <button type="submit" class="btn btn-danger">Cancel</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <% }); %>
                     </div>
                     <% } %>
-
-                        <!-- Create Appointment Form -->
-                        <div class="section">
-                            <h2>Book New Appointment</h2>
-                            <form action="/appointment/create" method="POST">
-                                <h3 style="margin-bottom: 15px; color: #667eea;">Pet Information</h3>
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label for="animalName">Pet Name *</label>
-                                        <input type="text" id="animalName" name="animalName" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="animalType">Pet Type *</label>
-                                        <select id="animalType" name="animalType" required>
-                                            <option value="">Select type...</option>
-                                            <% animalTypes.forEach(type=> { %>
-                                                <option value="<%= type %>">
-                                                    <%= type.charAt(0).toUpperCase() + type.slice(1) %>
-                                                </option>
-                                                <% }); %>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="animalBreed">Breed</label>
-                                        <input type="text" id="animalBreed" name="animalBreed">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="animalAge">Age (years)</label>
-                                        <input type="number" id="animalAge" name="animalAge" min="0">
-                                    </div>
-                                </div>
-
-                                <h3 style="margin: 20px 0 15px; color: #667eea;">Owner Information</h3>
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label for="ownerName">Your Name *</label>
-                                        <input type="text" id="ownerName" name="ownerName" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="ownerPhone">Phone Number *</label>
-                                        <input type="tel" id="ownerPhone" name="ownerPhone" required>
-                                    </div>
-                                </div>
-
-                                <h3 style="margin: 20px 0 15px; color: #667eea;">Appointment Details</h3>
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label for="appointmentDate">Appointment Date & Time *</label>
-                                        <input type="datetime-local" id="appointmentDate" name="appointmentDate"
-                                            required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="reason">Reason for Visit *</label>
-                                        <input type="text" id="reason" name="reason" required
-                                            placeholder="e.g., Annual checkup">
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="notes">Additional Notes</label>
-                                    <textarea id="notes" name="notes"
-                                        placeholder="Any additional information..."></textarea>
-                                </div>
-
-                                <button type="submit" class="btn btn-primary">Book Appointment</button>
-                            </form>
-                        </div>
-
-                        <!-- Appointments List -->
-                        <div class="section">
-                            <h2>Your Appointments</h2>
-                            <% if (appointments.length===0) { %>
-                                <div class="empty-state">
-                                    <p>📅 No appointments found</p>
-                                    <small>Book your first appointment using the form above</small>
-                                </div>
-                                <% } else { %>
-                                    <div class="appointments-list">
-                                        <% appointments.forEach(appointment=> { %>
-                                            <div class="appointment-card">
-                                                <div class="appointment-info">
-                                                    <div class="appointment-id">ID: <%= appointment.id %>
-                                                    </div>
-                                                    <div class="appointment-date">
-                                                        <%= new
-                                                            Date(appointment.appointmentDate).toLocaleString('en-US', {
-                                                            weekday: 'long' , year: 'numeric' , month: 'long' ,
-                                                            day: 'numeric' , hour: '2-digit' , minute: '2-digit' }) %>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <form action="/appointment/cancel/<%= appointment.id %>"
-                                                        method="POST" style="display: inline;"
-                                                        onsubmit="return confirm('Are you sure you want to cancel this appointment?');">
-                                                        <button type="submit" class="btn btn-danger">Cancel</button>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                            <% }); %>
-                                    </div>
-                                    <% } %>
-                        </div>
+        </div>
     </div>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script>
+        // Show toast based on query parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const toast = urlParams.get('toast');
+
+        if (toast === 'success') {
+            Toastify({
+                text: "✅ Appointment created successfully!",
+                duration: 3000,
+                gravity: "top",
+                position: "right",
+                style: {
+                    background: "linear-gradient(to right, #00b09b, #96c93d)",
+                }
+            }).showToast();
+            // Clean URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+        } else if (toast === 'cancelled') {
+            Toastify({
+                text: "🗑️ Appointment cancelled",
+                duration: 3000,
+                gravity: "top",
+                position: "right",
+                style: {
+                    background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                }
+            }).showToast();
+            window.history.replaceState({}, document.title, window.location.pathname);
+        } else if (toast === 'error') {
+            Toastify({
+                text: "❌ An error occurred. Please try again.",
+                duration: 3000,
+                gravity: "top",
+                position: "right",
+                style: {
+                    background: "linear-gradient(to right, #eb3349, #f45c43)",
+                }
+            }).showToast();
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    </script>
 </body>
 
 </html>

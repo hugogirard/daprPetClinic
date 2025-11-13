@@ -15,6 +15,7 @@
     "@dapr/dapr": "^3.6.1",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
-    "express-session": "^1.18.2"
+    "express-session": "^1.18.2",
+    "toastify-js": "^1.12.0"
   }
 }

@@ -89,19 +89,23 @@ app.get('/dashboard', requireAuth, async (req, res) => {
     res.render('dashboard', {
       userEmail: req.session.userEmail,
       appointments: appointments,
-      animalTypes: AnimalType.getAll(),
-      error: null,
-      success: null
+      toast: req.query.toast || null
     });
   } catch (error) {
     res.render('dashboard', {
       userEmail: req.session.userEmail,
       appointments: [],
-      animalTypes: AnimalType.getAll(),
-      error: error.message,
-      success: null
+      toast: null
     });
   }
+});
+
+// New appointment page
+app.get('/appointment/new', requireAuth, (req, res) => {
+  res.render('new-appointment', {
+    userEmail: req.session.userEmail,
+    animalTypes: AnimalType.getAll()
+  });
 });
 
 // Create appointment
@@ -113,24 +117,9 @@ app.post('/appointment/create', requireAuth, async (req, res) => {
     });
     
     await petClinicService.createAppointment(appointmentData);
-    
-    const appointments = await petClinicService.listAppointments(req.session.userEmail);
-    res.render('dashboard', {
-      userEmail: req.session.userEmail,
-      appointments: appointments,
-      animalTypes: AnimalType.getAll(),
-      error: null,
-      success: 'Appointment created successfully!'
-    });
+    res.redirect('/dashboard?toast=success');
   } catch (error) {
-    const appointments = await petClinicService.listAppointments(req.session.userEmail).catch(() => []);
-    res.render('dashboard', {
-      userEmail: req.session.userEmail,
-      appointments: appointments,
-      animalTypes: AnimalType.getAll(),
-      error: error.message,
-      success: null
-    });
+    res.redirect('/appointment/new?toast=error');
   }
 });
 
@@ -138,16 +127,9 @@ app.post('/appointment/create', requireAuth, async (req, res) => {
 app.post('/appointment/cancel/:id', requireAuth, async (req, res) => {
   try {
     await petClinicService.cancelAppointment(req.params.id);
-    res.redirect('/dashboard');
+    res.redirect('/dashboard?toast=cancelled');
   } catch (error) {
-    const appointments = await petClinicService.listAppointments(req.session.userEmail).catch(() => []);
-    res.render('dashboard', {
-      userEmail: req.session.userEmail,
-      appointments: appointments,
-      animalTypes: AnimalType.getAll(),
-      error: error.message,
-      success: null
-    });
+    res.redirect('/dashboard?toast=error');
   }
 });
 

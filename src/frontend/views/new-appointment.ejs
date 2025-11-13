@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book New Appointment - Pet Clinic</title>
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <h1>🐾 Pet Clinic</h1>
+        <div class="user-info">
+            <span>
+                <%= userEmail %>
+            </span>
+            <a href="/logout" class="btn-logout">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Back button -->
+        <div style="margin-bottom: 20px;">
+            <a href="/dashboard" class="btn-back">← Back to My Appointments</a>
+        </div>
+
+        <!-- Create Appointment Form -->
+        <div class="section">
+            <h2>Book New Appointment</h2>
+            <form action="/appointment/create" method="POST">
+                <h3 class="form-section-title">Pet Information</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="animalName">Pet Name *</label>
+                        <input type="text" id="animalName" name="animalName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="animalType">Pet Type *</label>
+                        <select id="animalType" name="animalType" required>
+                            <option value="">Select type...</option>
+                            <% animalTypes.forEach(type=> { %>
+                                <option value="<%= type %>">
+                                    <%= type.charAt(0).toUpperCase() + type.slice(1) %>
+                                </option>
+                                <% }); %>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="animalBreed">Breed</label>
+                        <input type="text" id="animalBreed" name="animalBreed">
+                    </div>
+                    <div class="form-group">
+                        <label for="animalAge">Age (years)</label>
+                        <input type="number" id="animalAge" name="animalAge" min="0">
+                    </div>
+                </div>
+
+                <h3 class="form-section-title">Owner Information</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="ownerName">Your Name *</label>
+                        <input type="text" id="ownerName" name="ownerName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ownerPhone">Phone Number *</label>
+                        <input type="tel" id="ownerPhone" name="ownerPhone" required>
+                    </div>
+                </div>
+
+                <h3 class="form-section-title">Appointment Details</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="appointmentDate">Appointment Date & Time *</label>
+                        <input type="datetime-local" id="appointmentDate" name="appointmentDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reason">Reason for Visit *</label>
+                        <input type="text" id="reason" name="reason" required placeholder="e.g., Annual checkup">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="notes">Additional Notes</label>
+                    <textarea id="notes" name="notes" placeholder="Any additional information..."></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <a href="/dashboard" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Book Appointment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script>
+        // Show toast for errors
+        const urlParams = new URLSearchParams(window.location.search);
+        const toast = urlParams.get('toast');
+
+        if (toast === 'error') {
+            Toastify({
+                text: "❌ Failed to create appointment. Please try again.",
+                duration: 3000,
+                gravity: "top",
+                position: "right",
+                style: {
+                    background: "linear-gradient(to right, #eb3349, #f45c43)",
+                }
+            }).showToast();
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    </script>
+</body>
+
+</html>
