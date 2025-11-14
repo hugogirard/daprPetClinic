@@ -15,26 +15,24 @@ def subscribe():
     subscriptions.append(Subscription(pubsubname="pubsub",topic="invoice",route="invoice"))    
     return subscriptions
 
-@app.post('/email')
-async def email():
-    email_service.send_email()
-    return json.dumps({'success': True})
-
 @app.post('/invoice')
 async def invoice(request:Request):
     
     body = await request.body()
     
     event_data = json.loads(body)
-    
+        
     # Extract the actual data from CloudEvent
     if 'data' in event_data:
         data = event_data['data']
+        # If data is a string, parse it again
+        if isinstance(data, str):
+            data = json.loads(data)
     else:
         data = event_data
 
     print(f"Subscriber received invoice event: {data}", flush=True)
-
+    
     invoice_detail = InvoiceDetail(
         amount=data['amount'],
         appointment_id=data['appointmentId'],

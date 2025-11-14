@@ -24,3 +24,6 @@ GET http://localhost:8001/appointments/email/hugo%40gmail.com
 
 ###
 GET http://localhost:3501/v1.0/invoke/appointment-api/method/appointments/byId/74b20735-448c-4fb3-9904-ff0f76caa4fd
+
+###
+POST http://localhost:3501/v1.0/invoke/appointment-api/method/appointment/charge/c137d29d-4048-4176-846d-7640ac02ef0e

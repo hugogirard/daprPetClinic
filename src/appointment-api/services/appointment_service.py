@@ -76,7 +76,20 @@ class AppointmentService:
         if not appointment:
             return None
                 
-        self.dapr_client.save_state(DAPR_STORE_NAME, appointment_id, json.dumps(appointment.model_dump(mode='json', by_alias=True)))                
+        self.dapr_client.save_state(DAPR_STORE_NAME, appointment_id, json.dumps(appointment.model_dump(mode='json', by_alias=True)))
+
+        event = {
+             "amount": 250,
+             "appointmentId": appointment.id,
+             "ownerName": appointment.owner.name,
+             "ownerEmail": appointment.owner.email,
+             "petName": appointment.animal.name,
+             "appointmentReason": appointment.reason
+        }
+
+        self.dapr_client.publish_event(pubsub_name="pubsub",
+                                       topic_name="invoice",
+                                       data=json.dumps(event))
     
     def cancel_appointment(self, appointment_id: str) -> bool:
         """Cancel and delete an appointment"""
