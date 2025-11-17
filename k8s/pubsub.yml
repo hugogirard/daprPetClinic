@@ -1,0 +1,13 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: pubsub
+  namespace: petclinic
+spec:
+  type: pubsub.azure.servicebus.topics
+  version: v1
+  metadata:
+    - name: namespaceName
+      # Required when using Azure Authentication.
+      # Must be a fully-qualified domain name
+      value: "bus-xvww7svtv7usq.servicebus.windows.net"

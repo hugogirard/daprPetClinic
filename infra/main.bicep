@@ -57,6 +57,9 @@ module serviceBus 'br/public:avm/res/service-bus/namespace:0.15.1' = {
   scope: rg
   params: {
     name: 'bus-${suffix}'
+    tags: {
+      SecurityControl: 'Ignore'
+    }
     disableLocalAuth: false
     publicNetworkAccess: 'Enabled'
     topics: [
@@ -64,5 +67,41 @@ module serviceBus 'br/public:avm/res/service-bus/namespace:0.15.1' = {
         name: 'invoice'
       }
     ]
+  }
+}
+
+module storageAccount 'br/public:avm/res/storage/storage-account:0.29.0' = {
+  scope: rg
+  params: {
+    name: 'str${replace(suffix,'-','')}'
+    location: location
+    tags: {
+      SecurityControl: 'Ignore'
+    }
+    kind: 'StorageV2'
+    publicNetworkAccess: 'Enabled'
+    allowSharedKeyAccess: true
+    tableServices: {
+      tables: [
+        {
+          name: 'daprstate'
+        }
+      ]
+    }
+  }
+}
+
+module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.3' = {
+  scope: rg
+  params: {
+    tags: {
+      SecurityControl: 'Ignore'
+    }
+    #disable-next-line BCP334
+    name: 'acr${replace(suffix,'-','')}'
+    location: location
+    acrAdminUserEnabled: true
+    publicNetworkAccess: 'Enabled'
+    acrSku: 'Standard'
   }
 }

@@ -19,3 +19,5 @@ dapr init -k
 k get namespace
 
 k get pod -n dapr-system
+
+k apply -f .\namespace.yml
