@@ -1,0 +1,19 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: sendmail
+  namespace: petclinic
+spec:
+  type: bindings.smtp
+  version: v1
+  metadata:
+    - name: host
+      value: mailserver
+    - name: port
+      value: 25
+    - name: user
+      value: _username
+    - name: password
+      value: _password
+    - name: skipTLSVerify
+      value: true

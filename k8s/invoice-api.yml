@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: invoice-api
+  namespace: petclinic
+  labels:
+    app: invoice-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: invoice-api
+  template:
+    metadata:
+      labels:
+        app: invoice-api
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "invoice-api"
+        dapr.io/app-port: "8001"
+    spec:
+      containers:
+        - name: invoice-api
+          image: acrxvww7svtv7usq.azurecr.io/invoice-api:1.2
+          ports:
+            - containerPort: 8001
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: invoice-svc
+  namespace: petclinic
+spec:
+  type: LoadBalancer
+  selector:
+    app: invoice-api
+  ports:
+    - port: 8001
+      targetPort: 8001
+      protocol: TCP

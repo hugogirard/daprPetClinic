@@ -21,3 +21,5 @@ k get namespace
 k get pod -n dapr-system
 
 k apply -f .\namespace.yml
+
+az aks update --name myAKSCluster --resource-group myResourceGroup --attach-acr `<acr-name>`
