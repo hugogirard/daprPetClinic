@@ -1,0 +1,11 @@
+# Report temp (cold outside, comfortable inside)
+curl -X POST http://localhost:3000/thermostat/home-123/temperature -H "Content-Type: application/json" -d "{\"indoor_temp\": 21.0, \"outdoor_temp\": -15.0}"
+
+# Check status
+curl http://localhost:3000/thermostat/home-123/status
+
+# Report temp drop (needs heating)
+curl -X POST http://localhost:3000/thermostat/home-123/temperature -H "Content-Type: application/json" -d "{\"indoor_temp\": 18.5, \"outdoor_temp\": -28.0}"
+
+# Raise target
+curl -X POST http://localhost:3000/thermostat/home-123/target -H "Content-Type: application/json" -d "{\"target_temp\": 22.0}"
