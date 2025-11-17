@@ -49,3 +49,20 @@ module ask 'modules/k8s/aks.bicep' = {
     sshRSAPublicKey: sshRSAPublicKey
   }
 }
+
+var suffix = uniqueString(rg.id)
+
+// Service Bus
+module serviceBus 'br/public:avm/res/service-bus/namespace:0.15.1' = {
+  scope: rg
+  params: {
+    name: 'bus-${suffix}'
+    disableLocalAuth: false
+    publicNetworkAccess: 'Enabled'
+    topics: [
+      {
+        name: 'invoice'
+      }
+    ]
+  }
+}
