@@ -10,4 +10,4 @@ spec:
     - name: namespaceName
       # Required when using Azure Authentication.
       # Must be a fully-qualified domain name
-      value: "bus-xvww7svtv7usq.servicebus.windows.net"
+      value: "servicebusnamespace.servicebus.windows.net"

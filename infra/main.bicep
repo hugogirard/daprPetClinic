@@ -80,6 +80,9 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.29.0' = {
     }
     kind: 'StorageV2'
     publicNetworkAccess: 'Enabled'
+    networkAcls: {
+      ipRules: []
+    }
     allowSharedKeyAccess: true
     tableServices: {
       tables: [
@@ -103,5 +106,45 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.3' =
     acrAdminUserEnabled: true
     publicNetworkAccess: 'Enabled'
     acrSku: 'Standard'
+  }
+}
+
+module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:0.15.0' = {
+  scope: rg
+  params: {
+    tags: {
+      SecurityControl: 'Ignore'
+    }
+    // Required parameters
+    availabilityZone: 1
+    name: 'db-${suffix}'
+    skuName: 'Standard_D2s_v3'
+    tier: 'GeneralPurpose'
+    backupRetentionDays: 20
+    configurations: [
+      {
+        name: 'log_min_messages'
+        source: 'user-override'
+        value: 'INFO'
+      }
+    ]
+    databases: [
+      {
+        name: 'daprstate'
+      }
+    ]
+    firewallRules: [
+      {
+        endIpAddress: '0.0.0.0'
+        name: 'AllowAllWindowsAzureIps'
+        startIpAddress: '0.0.0.0'
+      }
+    ]
+    geoRedundantBackup: 'Disabled'
+    highAvailability: 'SameZone'
+    location: location
+    publicNetworkAccess: 'Enabled'
+    storageSizeGB: 1024
+    version: '14'
   }
 }
