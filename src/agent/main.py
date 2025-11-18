@@ -14,8 +14,8 @@ DAPR_STORE_NAME = "statestore"
 
 app = Boostrapper().run()
 
-# for route in routes:
-#     app.include_router(route,prefix="/api")
+for route in routes:
+    app.include_router(route,prefix="/api")
 
 dapr_app = DaprApp(app)
 

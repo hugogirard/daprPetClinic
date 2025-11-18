@@ -1,5 +1,5 @@
-from .appointment import router as routes_appointment
+from .chat import router as chat_appointment
 
 routes = [
-    routes_appointment
+    chat_appointment
 ]

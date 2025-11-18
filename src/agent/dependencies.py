@@ -21,9 +21,6 @@ _logger.addHandler(stream_handler)
 # injection in the route
 ######################################
 
-def get_agent(request:Request) -> Agent:
-    return request.app.state.agent
-
 def get_logger() -> Logger:
     return _logger
 
