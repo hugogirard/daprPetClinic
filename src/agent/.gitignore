@@ -12,3 +12,39 @@ wheels/
 .dapr
 
 .env
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# VS Code settings
+.vscode/
+
+# Mac OS files
+.DS_Store
+
+# Test and coverage reports
+htmlcov/
+.coverage
+.tox/
+nosetests.xml
+coverage.xml
+*.cover
+*.pyc
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# mypy
+.mypy_cache/
+
+# pipenv
+Pipfile.lock
+
+# pytest
+.pytest_cache/

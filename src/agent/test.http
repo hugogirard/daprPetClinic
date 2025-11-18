@@ -1,0 +1,22 @@
+POST http://localhost:3504/v1.0/publish/pubsub/new_appointment
+Content-Type: application/json
+
+{
+    "id": "4544545",
+    "email": "hugo@contoso.com",
+    "animal_name": "Mozart",
+    "appointmentDate": "2025-11-20T10:30:00",
+    "reason": "Annual Vaccine",
+    "notes": "Patient is nervous around other animals",
+    "createdAt": "2025-11-18T08:00:00"
+}
+
+###
+
+POST http://localhost:3504/v1.0/publish/pubsub/cancel_appointment
+Content-Type: application/json
+
+{
+    "id": "4544545",
+    "email": "hugo@contoso.com"
+}

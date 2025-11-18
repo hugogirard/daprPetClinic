@@ -1,13 +1,7 @@
-from .animal import Animal, AnimalType
-from .owner import Owner
-from .appointment import Appointment, AppointmentCreate, AppointmentSummary
-
+from .appointment import Appointment
+from .cloudevent import CloudEvent
 
 __all__ = [
-    "Animal",
-    "AnimalType",
-    "Owner",
     "Appointment",
-    "AppointmentCreate",        
-    "AppointmentSummary"
+    "CloudEvent"
 ]

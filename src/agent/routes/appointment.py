@@ -9,16 +9,20 @@ router = APIRouter(
     prefix="/appointment"
 )
 
-@router.post('/')
-async def chat(prompt:str,
-              session_id: str,  # Add session_id as a parameter
-              agent: Annotated[Agent, Depends(get_agent)],
-              logger: Annotated[Logger, Depends(get_logger)]) -> str:
-    try:
+# @router.post('/')
+# async def save_appointment(request:Request):
+#     pass
+
+# @router.post('/')
+# async def chat(prompt:str,
+#                email: str,  # Add session_id as a parameter
+#                agent: Annotated[Agent, Depends(get_agent)],
+#                logger: Annotated[Logger, Depends(get_logger)]) -> str:
+#     try:
         
         
-        response = await agent.run(prompt)
-        return response.content
-    except Exception as err:
-        logger.error(err)
-        raise HTTPException(status_code=500, detail='Internal Server Error')
+#         response = await agent.run(prompt)
+#         return response.content
+#     except Exception as err:
+#         logger.error(err)
+#         raise HTTPException(status_code=500, detail='Internal Server Error')

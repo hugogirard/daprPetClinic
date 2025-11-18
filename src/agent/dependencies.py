@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi import Request, HTTPException
 from logging import Logger
 from dapr_agents import Agent
+from dapr.aio.clients import DaprClient
 import logging
 import sys
 
@@ -25,3 +26,6 @@ def get_agent(request:Request) -> Agent:
 
 def get_logger() -> Logger:
     return _logger
+
+def get_dapr_client(request:Request) -> DaprClient:
+    return request.app.state.dapr
