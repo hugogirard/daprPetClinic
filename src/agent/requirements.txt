@@ -1,0 +1,6 @@
+dapr==1.16.0
+pydantic==2.12.4
+python-dotenv==1.2.1
+dapr-agents==0.10.1
+fastapi==0.121.1
+fastapi-cli==0.0.16

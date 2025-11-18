@@ -1,13 +1,9 @@
 from dapr.actor import Actor, ActorInterface, actormethod
-from dapr.actor.runtime.runtime import ActorRuntime
 from datetime import datetime, timedelta
-from fastapi import FastAPI
-from pydantic import BaseModel
 import logging
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
 
 class ThermostatActorInterface(ActorInterface):
     """Interface for Quebec Winter Thermostat"""
@@ -23,7 +19,6 @@ class ThermostatActorInterface(ActorInterface):
     @actormethod(name="GetStatus")
     async def get_status(self) -> dict:
         pass
-
 
 class QuebecThermostatActor(Actor, ThermostatActorInterface):
     """
@@ -81,69 +76,4 @@ class QuebecThermostatActor(Actor, ThermostatActorInterface):
             "target_temp": target,
             "heating_on": heating,
             "last_reading": reading
-        }
-
-
-# FastAPI app
-app = FastAPI(title="Quebec Thermostat Demo")
-
-
-@app.on_event("startup")
-async def startup():
-    """Register actor with Dapr"""
-    ActorRuntime.register_actor(QuebecThermostatActor)
-    logger.info("✓ Quebec Thermostat Actor registered")
-
-
-@app.get("/")
-def home():
-    return {"service": "Quebec Winter Thermostat", "status": "running"}
-
-
-# API models
-class TempReport(BaseModel):
-    indoor_temp: float
-    outdoor_temp: float
-
-class TargetTemp(BaseModel):
-    target_temp: float
-
-
-@app.post("/thermostat/{id}/temperature")
-async def report_temp(id: str, report: TempReport):
-    """Report temperature"""
-    proxy = ActorRuntime.get_actor_proxy(
-        actor_type="QuebecThermostatActor",
-        actor_id=id,
-        actor_interface=ThermostatActorInterface
-    )
-    await proxy.report_temperature(report.indoor_temp, report.outdoor_temp)
-    return {"status": "ok"}
-
-
-@app.post("/thermostat/{id}/target")
-async def set_target(id: str, target: TargetTemp):
-    """Set target temperature"""
-    proxy = ActorRuntime.get_actor_proxy(
-        actor_type="QuebecThermostatActor",
-        actor_id=id,
-        actor_interface=ThermostatActorInterface
-    )
-    await proxy.set_target_temperature(target.target_temp)
-    return {"status": "ok"}
-
-
-@app.get("/thermostat/{id}/status")
-async def get_status(id: str):
-    """Get thermostat status"""
-    proxy = ActorRuntime.get_actor_proxy(
-        actor_type="QuebecThermostatActor",
-        actor_id=id,
-        actor_interface=ThermostatActorInterface
-    )
-    return await proxy.get_status()
-
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=3000)
+        }    
