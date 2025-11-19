@@ -1,0 +1,13 @@
+C:\github\daprPetClinic\src\actors\Contoso.Energy.Infrastructure\bin\Debug\net8.0\Contoso.Energy.Infrastructure.deps.json
+C:\github\daprPetClinic\src\actors\Contoso.Energy.Infrastructure\bin\Debug\net8.0\Contoso.Energy.Infrastructure.dll
+C:\github\daprPetClinic\src\actors\Contoso.Energy.Infrastructure\bin\Debug\net8.0\Contoso.Energy.Infrastructure.pdb
+C:\github\daprPetClinic\src\actors\Contoso.Energy.Infrastructure\obj\Debug\net8.0\Contoso.Energy.Infrastructure.csproj.AssemblyReference.cache
+C:\github\daprPetClinic\src\actors\Contoso.Energy.Infrastructure\obj\Debug\net8.0\Contoso.Energy.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\github\daprPetClinic\src\actors\Contoso.Energy.Infrastructure\obj\Debug\net8.0\Contoso.Energy.Infrastructure.AssemblyInfoInputs.cache
+C:\github\daprPetClinic\src\actors\Contoso.Energy.Infrastructure\obj\Debug\net8.0\Contoso.Energy.Infrastructure.AssemblyInfo.cs
+C:\github\daprPetClinic\src\actors\Contoso.Energy.Infrastructure\obj\Debug\net8.0\Contoso.Energy.Infrastructure.csproj.CoreCompileInputs.cache
+C:\github\daprPetClinic\src\actors\Contoso.Energy.Infrastructure\obj\Debug\net8.0\Contoso.Energy.Infrastructure.sourcelink.json
+C:\github\daprPetClinic\src\actors\Contoso.Energy.Infrastructure\obj\Debug\net8.0\Contoso.Energy.Infrastructure.dll
+C:\github\daprPetClinic\src\actors\Contoso.Energy.Infrastructure\obj\Debug\net8.0\refint\Contoso.Energy.Infrastructure.dll
+C:\github\daprPetClinic\src\actors\Contoso.Energy.Infrastructure\obj\Debug\net8.0\Contoso.Energy.Infrastructure.pdb
+C:\github\daprPetClinic\src\actors\Contoso.Energy.Infrastructure\obj\Debug\net8.0\ref\Contoso.Energy.Infrastructure.dll
