@@ -6,6 +6,9 @@ from dapr.clients import DaprClient
 import json
 
 DAPR_STORE_NAME = "statestore"
+PUB_SUB_STORE = "statestore"
+NEW_APPOINTMENT_TOPIC = "new_appointment"
+CANCEL_APPOINTMENT_TOPIC = "cancel_appointment"
 
 class AppointmentService:
     def __init__(self):
