@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .shipment {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background-color: #107C10;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .details {
+            margin: 20px 0;
+        }
+
+        .urgent {
+            background-color: #FFF4CE;
+            padding: 10px;
+            border-left: 4px solid #FFB900;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="shipment">
+        <div class="header">
+            <h1>Warehouse Notification</h1>
+            <h2>Prepare Shipment</h2>
+        </div>
+        <div class="urgent">
+            <p><strong>⚠ Action Required: Prepare order for shipment</strong></p>
+        </div>
+        <div class="details">
+            <h3>Order Details</h3>
+            <p><strong>Order ID:</strong> {{order_id}}</p>
+            <p><strong>Customer:</strong> {{customer_name}}</p>
+            <p><strong>Product:</strong> {{product_name}}</p>
+            <p><strong>Quantity:</strong> {{quantity}}</p>
+            <p><strong>Order Date:</strong> {{order_date}}</p>
+            <hr />
+            <h3>Shipping Information</h3>
+            <p><strong>Ship To:</strong><br />{{shipping_address}}</p>
+            <hr />
+            <p>Payment has been processed. Please prepare this order for shipment as soon as possible.</p>
+        </div>
+    </div>
+</body>
+
+</html>
